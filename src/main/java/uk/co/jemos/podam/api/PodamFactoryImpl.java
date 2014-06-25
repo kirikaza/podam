@@ -2245,33 +2245,43 @@ public class PodamFactoryImpl implements PodamFactory {
 				retValue = resolveMapType(attributeType);
 			}
 
-			Class<?> keyClass = null;
-
-			Class<?> elementClass = null;
-
 			AtomicReference<Type[]> keyGenericTypeArgs = new AtomicReference<Type[]>(
 					new Type[] {});
 			AtomicReference<Type[]> elementGenericTypeArgs = new AtomicReference<Type[]>(
 					new Type[] {});
-			if (genericTypeArgs == null || genericTypeArgs.length == 0) {
 
-				LOG.warn("Map attribute: "
-						+ attributeName
-						+ " is non-generic. We will assume a Map<Object, Object> for you.");
-
-				keyClass = Object.class;
-
-				elementClass = Object.class;
-
-			} else {
-
+			Type[] actualTypeArguments = null;
+			if (genericTypeArgs != null && genericTypeArgs.length != 0) {
 				// Expected only key, value type
 				if (genericTypeArgs.length != 2) {
 					throw new IllegalStateException(
 							"In a Map only key value generic type are expected.");
 				}
+				actualTypeArguments = genericTypeArgs;
+			} else {
+				for (Type iface : attributeType.getGenericInterfaces()) {
+					if (iface instanceof ParameterizedType) {
+						ParameterizedType paramIface = (ParameterizedType) iface;
+						if (paramIface.getRawType().equals(Map.class)) {
+							actualTypeArguments = paramIface.getActualTypeArguments();
+							break;
+						}
+					}
+				}
+			}
 
-				Type[] actualTypeArguments = genericTypeArgs;
+			Class<?> keyClass = null;
+			Class<?> elementClass = null;
+
+			if (actualTypeArguments == null) {
+				LOG.warn("Map attribute: "
+						+ attributeName
+						+ " is non-generic. We will assume a Map<Object, Object> for you.");
+
+				keyClass = Object.class;
+				elementClass = Object.class;
+
+			} else {
 				keyClass = resolveGenericParameter(actualTypeArguments[0],
 						typeArgsMap, keyGenericTypeArgs);
 				elementClass = resolveGenericParameter(actualTypeArguments[1],
