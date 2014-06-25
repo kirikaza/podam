@@ -2119,13 +2119,16 @@ public class PodamFactoryImpl implements PodamFactory {
 
 		}
 
-		int nbrElements = strategy.getNumberOfCollectionElements(pojoClass);
+		int nbrElements;
 
 		if (null != collectionAnnotation) {
 
 			nbrElements = collectionAnnotation.nbrElements();
 			elementStrategy = collectionAnnotation.collectionElementStrategy()
 					.newInstance();
+		} else {
+
+			nbrElements = strategy.getNumberOfCollectionElements(collectionElementType);
 		}
 
 		for (int i = 0; i < nbrElements; i++) {
@@ -2345,8 +2348,7 @@ public class PodamFactoryImpl implements PodamFactory {
 
 		}
 
-		int nbrElements = strategy.getNumberOfCollectionElements(mapArguments
-				.getPojoClass());
+		int nbrElements;
 
 		if (null != collectionAnnotation) {
 
@@ -2355,6 +2357,9 @@ public class PodamFactoryImpl implements PodamFactory {
 			elementStrategy = collectionAnnotation.mapElementStrategy()
 					.newInstance();
 
+		} else {
+			nbrElements = strategy.getNumberOfCollectionElements(
+					mapArguments.getElementClass());
 		}
 
 		for (int i = 0; i < nbrElements; i++) {
