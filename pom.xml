@@ -8,9 +8,9 @@
 		<version>7</version>
 	</parent>
 
-	<groupId>uk.co.jemos.podam</groupId>
+	<groupId>com.ecwid.thirdparty</groupId>
 	<artifactId>podam</artifactId>
-	<version>5.5.0.RELEASE</version>
+	<version>5.5.1-ecwid</version>
 	<name>podam</name>
 
 	<properties>
