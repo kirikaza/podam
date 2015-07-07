@@ -1947,16 +1947,18 @@ public class PodamFactoryImpl implements PodamFactory {
 					NO_TYPES);
 			Type actualTypeArgument = null;
 			if (genericTypeArgs == null || genericTypeArgs.length == 0) {
-				for (Type iface : collectionType.getGenericInterfaces()) {
-					if (iface instanceof ParameterizedType) {
-						ParameterizedType paramIface = (ParameterizedType) iface;
-						if (paramIface.getRawType().equals(List.class)) {
-							actualTypeArgument = paramIface.getActualTypeArguments()[0];
-							break;
+				for (Class type = collectionType; type != null; type = type.getSuperclass()) {
+					for (Type iface : type.getGenericInterfaces()) {
+						if (iface instanceof ParameterizedType) {
+							ParameterizedType paramIface = (ParameterizedType) iface;
+							if (paramIface.getRawType().equals(List.class)) {
+								actualTypeArgument = paramIface.getActualTypeArguments()[0];
+								break;
+							}
 						}
 					}
 				}
-				
+
 				if (actualTypeArgument == null) {
 					LOG.warn("The collection attribute: "
 							+ attributeName
@@ -2227,12 +2229,14 @@ public class PodamFactoryImpl implements PodamFactory {
 				}
 				actualTypeArguments = genericTypeArgs;
 			} else {
-				for (Type iface : attributeType.getGenericInterfaces()) {
-					if (iface instanceof ParameterizedType) {
-						ParameterizedType paramIface = (ParameterizedType) iface;
-						if (paramIface.getRawType().equals(Map.class)) {
-							actualTypeArguments = paramIface.getActualTypeArguments();
-							break;
+				for (Class type = attributeType; type != null; type = type.getSuperclass()) {
+					for (Type iface : type.getGenericInterfaces()) {
+						if (iface instanceof ParameterizedType) {
+							ParameterizedType paramIface = (ParameterizedType) iface;
+							if (paramIface.getRawType().equals(Map.class)) {
+								actualTypeArguments = paramIface.getActualTypeArguments();
+								break;
+							}
 						}
 					}
 				}
