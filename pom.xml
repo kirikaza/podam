@@ -10,7 +10,7 @@
 
 	<groupId>com.ecwid.thirdparty</groupId>
 	<artifactId>podam</artifactId>
-	<version>5.5.1-ecwid-2</version>
+	<version>5.5.1-ecwid-3</version>
 	<name>podam</name>
 
 	<properties>
